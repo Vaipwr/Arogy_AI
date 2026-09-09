@@ -6,3 +6,7 @@
 **/build/
 **/dist/
 **/Skin Disease Dataset/
+.env
+.env.local
+.env.*.local
+**/.env*

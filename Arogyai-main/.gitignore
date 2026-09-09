@@ -7,3 +7,7 @@ __pycache__
 Skin Disease Dataset/
 ml/Skin Disease Dataset/
 .venv/
+.env
+.env.local
+.env.*.local
+*.env
