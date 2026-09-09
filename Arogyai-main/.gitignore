@@ -11,5 +11,7 @@ ml/Skin Disease Dataset/
 .env.local
 .env.*.local
 *.env
+.env*
+*.env*
 
 .vercel
