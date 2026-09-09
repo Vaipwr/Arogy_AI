@@ -8,7 +8,7 @@ import {
   Camera, Upload, ArrowLeft, AlertTriangle, CheckCircle, 
   Info, Zap, FileImage, X, Eye, Download, RefreshCw, AlertCircle
 } from 'lucide-react';
-const BACKEND_BASE = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000';
+const BACKEND_BASE = import.meta.env.VITE_BACKEND_URL || 'https://arogy-ai-1.onrender.com';
 const PREDICT_API_URL = `${BACKEND_BASE.replace(/\/$/, '')}/predict`;
 
 interface DiseaseDetectionProps {
