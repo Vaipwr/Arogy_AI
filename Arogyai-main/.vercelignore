@@ -1,0 +1,10 @@
+requirements.txt
+Dockerfile
+.venv
+node_modules
+ml
+backend
+models
+Skin Disease Dataset
+.git
+.vscode
