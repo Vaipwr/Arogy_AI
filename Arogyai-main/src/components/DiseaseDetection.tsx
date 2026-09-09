@@ -8,8 +8,8 @@ import {
   Camera, Upload, ArrowLeft, AlertTriangle, CheckCircle, 
   Info, Zap, FileImage, X, Eye, Download, RefreshCw, AlertCircle
 } from 'lucide-react';
-
-const PREDICT_API_URL = 'http://127.0.0.1:8000/predict';
+const BACKEND_BASE = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:8000';
+const PREDICT_API_URL = `${BACKEND_BASE.replace(/\/$/, '')}/predict`;
 
 interface DiseaseDetectionProps {
   onConditionDetected: (condition: DetectedCondition) => void;
@@ -469,7 +469,7 @@ export function DiseaseDetection({ onConditionDetected, onBack, skincareType }: 
 
       let msg = err?.message || 'Failed to connect to AI prediction server.';
       if (err?.name === 'TypeError' && err?.message?.includes('fetch')) {
-        msg = 'Could not connect to FastAPI server at http://127.0.0.1:8000. Please ensure the backend is running.';
+        msg = `Could not connect to FastAPI server at ${BACKEND_BASE}. Please ensure the backend is running.`;
       }
       setApiError(msg);
     }
