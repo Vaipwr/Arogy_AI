@@ -1,0 +1,15 @@
+﻿src/App.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/ChatHistory.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/ChatInterface.tsx(37,3): error TS6133: 'userProfile' is declared but its value is never read.
+src/components/Dashboard.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/DiseaseDetection.tsx(11,1): error TS6133: 'ImageWithFallback' is declared but its value is never read.
+src/components/DiseaseDetection.tsx(19,65): error TS6133: 'healthProfile' is declared but its value is never read.
+src/components/EnhancedSkinHealthApp.tsx(94,25): error TS6133: 'setHealthMetrics' is declared but its value is never read.
+src/components/EnhancedSkinHealthFlowchart.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/FlowchartArrow.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
+src/components/HealthProfileCreation.tsx(10,17): error TS6133: 'ArrowLeft' is declared but its value is never read.
+src/components/HealthProfileCreation.tsx(10,65): error TS6133: 'Pill' is declared but its value is never read.
+src/components/ProfileCreation.tsx(10,16): error TS6133: 'ArrowLeft' is declared but its value is never read.
+src/components/SkincareApp.tsx(1,8): error TS6133: 'React' is declared but its value is never read.
+src/components/SkincareApp.tsx(118,12): error TS2741: Property 'onSaveDietPlan' is missing in type '{ skincareType: SkincareType; messages: ChatMessage[]; onMessagesUpdate: Dispatch<SetStateAction<ChatMessage[]>>; onSaveChat: () => void; onSavePlan: () => void; onBackToDashboard: () => void; userProfile: UserProfile | null; }' but required in type 'ChatInterfaceProps'.
+src/components/SkincareFlowchart.tsx(1,1): error TS6133: 'React' is declared but its value is never read.
