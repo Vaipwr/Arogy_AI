@@ -14,10 +14,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application files
-COPY backend/ ./backend/
-COPY ml/models/ ./ml/models/
-COPY models/ ./models/
+# Copy backend and models
+COPY Arogyai-main/backend/ ./backend/
+COPY Arogyai-main/ml/models/ ./ml/models/
+COPY Arogyai-main/models/ ./models/
 
 # Default port (Render uses 10000, Hugging Face uses 7860)
 ENV PORT=10000

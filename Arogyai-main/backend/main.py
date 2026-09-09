@@ -21,8 +21,15 @@ BASE_DIR = os.path.dirname(
     )
 )
 
-# Trained model
-MODEL_PATH = os.path.join(
+# Trained models
+TFLITE_MODEL_PATH = os.path.join(
+    BASE_DIR,
+    "ml",
+    "models",
+    "skin_classifier.tflite"
+)
+
+KERAS_MODEL_PATH = os.path.join(
     BASE_DIR,
     "ml",
     "models",
@@ -39,23 +46,61 @@ CLASS_MAPPING_PATH = os.path.join(
 
 
 # ============================================================
-# LOAD TRAINED MODEL
+# LOAD TRAINED MODEL (TFLite preferred for <50MB RAM, Keras fallback)
 # ============================================================
 
 print("=" * 60)
 print("Loading ArogyAI Skin Disease Model...")
 print("=" * 60)
 
-try:
-    model = tf.keras.models.load_model(MODEL_PATH)
+tflite_interpreter = None
+tflite_input_details = None
+tflite_output_details = None
+keras_model = None
+active_backend = None
 
-    print("Model loaded successfully!")
-    print(f"Model path: {MODEL_PATH}")
+# 1. Attempt TFLite (Ultra-low RAM < 50MB, prevents Render Free Tier OOM crashes)
+if os.path.exists(TFLITE_MODEL_PATH):
+    try:
+        try:
+            import tflite_runtime.interpreter as tflite_rt
+            tflite_interpreter = tflite_rt.Interpreter(model_path=TFLITE_MODEL_PATH)
+        except ImportError:
+            import tensorflow as tf
+            tflite_interpreter = tf.lite.Interpreter(model_path=TFLITE_MODEL_PATH)
 
-except Exception as error:
-    print("ERROR: Could not load the model.")
-    print(error)
-    raise
+        tflite_interpreter.allocate_tensors()
+        tflite_input_details = tflite_interpreter.get_input_details()
+        tflite_output_details = tflite_interpreter.get_output_details()
+        active_backend = "TFLite (Low-RAM)"
+        print(f"Loaded TFLite model successfully: {TFLITE_MODEL_PATH}")
+    except Exception as tfl_err:
+        print(f"Notice: TFLite load failed ({tfl_err}), falling back to Keras...")
+
+# 2. Attempt Keras model if TFLite not loaded
+if tflite_interpreter is None and os.path.exists(KERAS_MODEL_PATH):
+    try:
+        import tensorflow as tf
+        keras_model = tf.keras.models.load_model(KERAS_MODEL_PATH)
+        active_backend = "Keras EfficientNetB0"
+        print(f"Loaded Keras model successfully: {KERAS_MODEL_PATH}")
+    except Exception as keras_err:
+        print("ERROR: Could not load Keras model.")
+        print(keras_err)
+        raise
+
+if tflite_interpreter is None and keras_model is None:
+    raise RuntimeError("Neither TFLite nor Keras model could be loaded.")
+
+def run_inference(img_array: np.ndarray) -> np.ndarray:
+    if tflite_interpreter is not None:
+        tflite_interpreter.set_tensor(tflite_input_details[0]['index'], img_array)
+        tflite_interpreter.invoke()
+        return tflite_interpreter.get_tensor(tflite_output_details[0]['index'])
+    elif keras_model is not None:
+        return keras_model.predict(img_array, verbose=0)
+    else:
+        raise RuntimeError("No model loaded for inference.")
 
 
 # ============================================================
@@ -116,6 +161,7 @@ def home():
         "success": True,
         "message": "ArogyAI Skin Disease Detection API is running",
         "model": "EfficientNetB0",
+        "backend": active_backend,
         "classes": len(class_mapping)
     }
 
@@ -130,6 +176,7 @@ def model_info():
     return {
         "success": True,
         "model": "EfficientNetB0",
+        "backend": active_backend,
         "number_of_classes": len(class_mapping),
         "classes": list(class_mapping.values())
     }
@@ -237,10 +284,7 @@ async def predict_skin(
         # 8. RUN MODEL PREDICTION
         # ----------------------------------------------------
 
-        predictions = model.predict(
-            img_array,
-            verbose=0
-        )
+        predictions = run_inference(img_array)
 
 
         # ----------------------------------------------------
